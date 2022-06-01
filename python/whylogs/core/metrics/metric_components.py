@@ -143,6 +143,16 @@ class MaxIntegralComponent(MetricComponent[int]):
         return max([lhs, rhs])
 
 
+class SumIntegralComponent(MetricComponent[int]):
+    mtype = int
+    type_id = 3
+
+    @staticmethod
+    @_id_aggregator(type_id=type_id, name="sum")
+    def sum(lhs: int, rhs: int) -> int:
+        return lhs + rhs
+
+
 class FractionalComponent(MetricComponent[float]):
     mtype = float
 

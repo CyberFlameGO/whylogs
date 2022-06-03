@@ -3,9 +3,8 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Set
 
 from whylogs.core.configs import SummaryConfig
-from whylogs.core.metrics import Metric
 from whylogs.core.metrics.metric_components import MetricComponent, SumIntegralComponent
-from whylogs.core.metrics.metrics import MetricConfig, OperationResult
+from whylogs.core.metrics.metrics import Metric, MetricConfig, OperationResult
 from whylogs.core.preprocessing import PreprocessedColumn
 from whylogs.core.proto import MetricMessage
 

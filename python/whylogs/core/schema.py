@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, Mapping, Optional, TypeVar
 
 from whylogs.core.datatypes import StandardTypeMapper, TypeMapper
-from whylogs.core.metrics import Metric, MetricConfig
+from whylogs.core.metrics.metrics import Metric, MetricConfig
 from whylogs.core.resolvers import Resolver, StandardResolver
 from whylogs.core.stubs import pd
 

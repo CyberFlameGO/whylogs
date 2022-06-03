@@ -1,5 +1,5 @@
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Dict, Mapping, Optional, TypeVar
 
 from whylogs.core.datatypes import StandardTypeMapper, TypeMapper
@@ -14,6 +14,7 @@ LARGE_CACHE_SIZE_LIMIT = 1024 * 100
 T = TypeVar("T", bound="DatasetSchema")
 
 
+@dataclass
 class DatasetSchema:
     """
     Defines the schema for tracking metrics in whylogs.
@@ -54,14 +55,14 @@ class DatasetSchema:
 
     """
 
-    types: Dict[str, Any] = {}
+    types: Dict[str, Any] = field(default_factory=dict)
     default_configs: MetricConfig = MetricConfig()
     type_mapper: TypeMapper = StandardTypeMapper()
     resolvers: Resolver = StandardResolver()
     cache_size: int = 1024
     schema_based_automerge: bool = False
 
-    def __init__(self) -> None:
+    def __post_init__(self) -> None:
         self._columns = {}
 
         if self.cache_size < 0:
@@ -83,12 +84,8 @@ class DatasetSchema:
 
     def copy(self) -> "DatasetSchema":
         """Returns a new instance of the same underlying schema"""
-        copy = DatasetSchema()
+        copy = DatasetSchema(**self.__dict__)
         copy._columns = self._columns.copy()
-        copy.cache_size = self.cache_size
-        copy.type_mapper = self.type_mapper
-        copy.resolvers = self.resolvers
-
         return copy
 
     def resolve(self, *, pandas: Optional[pd.DataFrame] = None, row: Optional[Mapping[str, Any]] = None) -> bool:
@@ -102,6 +99,7 @@ class DatasetSchema:
 
                 self._columns[k] = ColumnSchema(
                     dtype=type(v),
+                    cfg=self.default_configs,
                     resolver=self.resolvers,
                     type_mapper=self.type_mapper,
                 )
@@ -123,6 +121,7 @@ class DatasetSchema:
             col_dtype = df.dtypes[col_name]
             self._columns[col_name] = ColumnSchema(
                 dtype=col_dtype,
+                cfg=self.default_configs,
                 resolver=self.resolvers,
                 type_mapper=self.type_mapper,
             )

@@ -4,9 +4,26 @@ from typing import Dict
 from whylogs.core.dataset_profile import DatasetProfile
 from whylogs.core.datatypes import DataType
 from whylogs.core.metrics import Metric
-from whylogs.core.metrics.merics import ConditionCountConfig, ConditionCountMetric
+from whylogs.core.metrics.condition_count_metric import ConditionCountConfig, ConditionCountMetric
+from whylogs.core.preprocessing import PreprocessedColumn
 from whylogs.core.resolvers import Resolver
 from whylogs.core.schema import ColumnSchema, DatasetSchema
+
+
+def test_condition_count_metric() -> None:
+    conditions = {
+        "alpha": re.compile("[a-zA-Z]+"),
+        "digit": re.compile("[0-9]+"),
+    }
+    metric = ConditionCountMetric(conditions)
+    strings = ["abc", "123", "kwatz", "314159", "abc123"]
+    metric.columnar_update(PreprocessedColumn.apply(strings))
+    summary = metric.to_summary_dict(None)
+
+    assert set(summary.keys()) == {"total", "alpha", "digit"}
+    assert summary["total"] == len(strings)
+    assert summary["alpha"] == 3  # "abc123" matches since it's not fullmatch
+    assert summary["digit"] == 2
 
 
 def test_condition_count_in_profile() -> None:
@@ -19,8 +36,8 @@ def test_condition_count_in_profile() -> None:
         "digit": re.compile("[0-9]+"),
     }
     config = ConditionCountConfig(conditions)
-    resolver = TestResolver(ColumnSchema(cfg=config))
-    schema = DatasetSchema(resolvers=resolver, default_configs=config)
+    resolver = TestResolver()
+    schema = DatasetSchema(default_configs=config, resolvers=resolver)
 
     row = {"col1": ["abc", "123"]}
     prof = DatasetProfile(schema)

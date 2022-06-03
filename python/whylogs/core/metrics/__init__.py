@@ -9,6 +9,7 @@ from whylogs.core.metrics.metrics import (
     Metric,
     MetricConfig,
 )
+from whylogs.core.metrics.condition_count_metric import ConditionCountMetric
 from whylogs.core.metrics.unicode_range import UnicodeRangeMetric
 
 
@@ -20,6 +21,7 @@ class StandardMetric(Enum):
     cardinality = CardinalityMetric
     frequent_items = FrequentItemsMetric
     unicode_range = UnicodeRangeMetric
+    condition_count = ConditionCountMetric
 
     def __init__(self, clz: Metric):
         self._clz = clz

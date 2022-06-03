@@ -54,10 +54,10 @@ class TestResolver(Resolver):
 def test_custom_metric_in_profile() -> None:
     row = {"col1": 12}
     schema = DatasetSchema(
-        types = {
+        types={
             "col1": int,
         },
-        resolvers = TestResolver()
+        resolvers=TestResolver(),
     )
     prof = DatasetProfile(schema)
     prof.track(row=row)

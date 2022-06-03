@@ -35,7 +35,9 @@ class ConditionCountMetric(Metric):
                 self.matches[cond_name] = SumIntegralComponent(0)
 
     def get_component_paths(self) -> List[str]:
-        paths: List[str] = ["total", ] + list(self.conditions.keys())
+        paths: List[str] = [
+            "total",
+        ] + list(self.conditions.keys())
         return paths
 
     def columnar_update(self, data: PreprocessedColumn) -> OperationResult:
@@ -85,7 +87,9 @@ class ConditionCountMetric(Metric):
 
         conditions = {cond_name: re.compile("") for cond_name in cond_names}
         total = MetricComponent.from_protobuf(msg.metric_components["total"])
-        matches = {cond_name: MetricComponent.from_protobuf(msg.metric_components[cond_name]) for cond_name in cond_names}
+        matches = {
+            cond_name: MetricComponent.from_protobuf(msg.metric_components[cond_name]) for cond_name in cond_names
+        }
         return ConditionCountMetric(
             conditions,
             total,

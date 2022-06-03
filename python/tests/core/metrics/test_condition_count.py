@@ -4,7 +4,10 @@ from typing import Dict
 from whylogs.core.dataset_profile import DatasetProfile
 from whylogs.core.datatypes import DataType
 from whylogs.core.metrics import Metric
-from whylogs.core.metrics.condition_count_metric import ConditionCountConfig, ConditionCountMetric
+from whylogs.core.metrics.condition_count_metric import (
+    ConditionCountConfig,
+    ConditionCountMetric,
+)
 from whylogs.core.preprocessing import PreprocessedColumn
 from whylogs.core.resolvers import Resolver
 from whylogs.core.schema import ColumnSchema, DatasetSchema

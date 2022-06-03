@@ -1,6 +1,7 @@
 from enum import Enum
 
 from whylogs.core.metrics.column_metrics import ColumnCountsMetric, TypeCountersMetric
+from whylogs.core.metrics.condition_count_metric import ConditionCountMetric
 from whylogs.core.metrics.metrics import (
     CardinalityMetric,
     DistributionMetric,
@@ -9,7 +10,6 @@ from whylogs.core.metrics.metrics import (
     Metric,
     MetricConfig,
 )
-from whylogs.core.metrics.condition_count_metric import ConditionCountMetric
 from whylogs.core.metrics.unicode_range import UnicodeRangeMetric
 
 

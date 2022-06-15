@@ -1,16 +1,17 @@
-import pandas as pd
-import pytest
 import re
 from typing import Dict
+
+import pandas as pd
+import pytest
 
 from whylogs.core.dataset_profile import DatasetProfile
 from whylogs.core.datatypes import DataType
 from whylogs.core.metrics import Metric
-from whylogs.core.metrics.metric_components import SumIntegralComponent
 from whylogs.core.metrics.condition_count_metric import (
     ConditionCountConfig,
     ConditionCountMetric,
 )
+from whylogs.core.metrics.metric_components import SumIntegralComponent
 from whylogs.core.preprocessing import PreprocessedColumn
 from whylogs.core.resolvers import Resolver
 from whylogs.core.schema import ColumnSchema, DatasetSchema
@@ -91,7 +92,11 @@ def test_condition_count_in_profile() -> None:
         if col1_prof:
             assert col1_prof._metrics.keys() == col2_prof._metrics.keys()
             assert col1_prof.to_summary_dict() == col2_prof.to_summary_dict()
-            assert {"condition_count/total", "condition_count/alpha", "condition_count/digit"} <= col1_prof.to_summary_dict().keys()
+            assert {
+                "condition_count/total",
+                "condition_count/alpha",
+                "condition_count/digit",
+            } <= col1_prof.to_summary_dict().keys()
 
 
 def test_condition_count_in_column_profile() -> None:

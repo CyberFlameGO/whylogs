@@ -13,6 +13,7 @@ from whylogs.core.proto import MetricMessage
 class ConditionCountConfig(MetricConfig):
     conditions: Dict[str, str] = field(default_factory=dict)
 
+
 """
 eventually Dict[str, Callable]
 
@@ -37,6 +38,7 @@ or_conditions(left: Callable, right: Callable) -> Callable
 not_condition(cond: Callable) -> lambda x: not cond(x)
 
 """
+
 
 @dataclass(frozen=True)
 class ConditionCountMetric(Metric):

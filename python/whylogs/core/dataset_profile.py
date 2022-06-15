@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, Mapping, Optional
 
 from whylogs.core.metrics import Metric
+
 from .column_profile import ColumnProfile
 from .schema import DatasetSchema
 from .stubs import pd

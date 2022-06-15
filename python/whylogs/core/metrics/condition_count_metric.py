@@ -13,11 +13,35 @@ from whylogs.core.proto import MetricMessage
 class ConditionCountConfig(MetricConfig):
     conditions: Dict[str, str] = field(default_factory=dict)
 
+"""
+eventually Dict[str, Callable]
+
+config = ConditionCountConfig(conditions = {
+  "alpha": condition("~",  "[a-zA-Z]+"),  ->  lambda x: re.compile(value).match(x)
+  "digit": condition("~=", "[0-9]+"),     ->  lambda x: re.compile(value).fullmatch(x)
+  "equal": condition("==", 42),           ->  lambda x: x == value
+  "le":    condition("<=", 42),           ->  lambda x: x <= value
+  etc...
+})
+
+condition(op: str, value: Union[str, int, float]) -> Callable
+
+perhaps
+
+condition(op: str, value: Union[str, int, float], throw_on_failure: bool=False, log_on_fail: bool=False) -> (Callable, throw, log)
+
+maybe
+
+and_conditions(left: Callable, right: Callable) -> Callable
+or_conditions(left: Callable, right: Callable) -> Callable
+not_condition(cond: Callable) -> lambda x: not cond(x)
+
+"""
 
 @dataclass(frozen=True)
 class ConditionCountMetric(Metric):
     conditions: Dict[str, Any]
-    total: SumIntegralComponent = SumIntegralComponent(0)
+    total: SumIntegralComponent
     matches: Dict[str, SumIntegralComponent] = field(default_factory=dict)
 
     @property
@@ -32,6 +56,13 @@ class ConditionCountMetric(Metric):
         for cond_name in self.conditions.keys():
             if cond_name not in self.matches:
                 self.matches[cond_name] = SumIntegralComponent(0)
+
+    def add_conditions(self, conditions: Dict[str, Any]) -> None:
+        if "total" in conditions.keys():
+            raise ValueError("Condition cannot be named 'total'")
+        for cond_name, regex in conditions.items():
+            self.conditions[cond_name] = re.compile(regex)
+            self.matches[cond_name] = SumIntegralComponent(0)
 
     def get_component_paths(self) -> List[str]:
         paths: List[str] = [
@@ -62,7 +93,8 @@ class ConditionCountMetric(Metric):
             raise ValueError("ConditionCountMetric.zero() requires ConditionCountConfig argument")
 
         return ConditionCountMetric(
-            conditions={cond_name: re.compile(regex) for cond_name, regex in config.conditions.items()}
+            conditions={cond_name: re.compile(regex) for cond_name, regex in config.conditions.items()},
+            total=SumIntegralComponent(0),
         )
 
     def to_protobuf(self) -> MetricMessage:

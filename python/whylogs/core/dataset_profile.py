@@ -4,6 +4,7 @@ import time
 from datetime import datetime, timezone
 from typing import Any, Dict, Mapping, Optional
 
+from whylogs.core.metrics import Metric
 from .column_profile import ColumnProfile
 from .schema import DatasetSchema
 from .stubs import pd
@@ -69,6 +70,11 @@ class DatasetProfile(object):
             logger.warning("No timezone set in the datetime_timestamp object. Default to local timezone")
 
         self._dataset_timestamp = dataset_timestamp.astimezone(tz=timezone.utc)
+
+    def add_metric(self, col_name: str, metric: Metric) -> None:
+        if col_name not in self._columns:
+            raise ValueError(f"{col_name} is not a column in the dataset profile")
+        self._columns[col_name].add_metric(metric)
 
     def track(
         self,

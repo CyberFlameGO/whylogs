@@ -1,5 +1,6 @@
-from typing import Dict
+from typing import Any, Dict
 
+import math
 import numpy as np
 import pytest
 
@@ -101,6 +102,15 @@ class UnicodeSchema(DatasetSchema):
     resolvers = UnicodeResolver()
 
 
+def _NaNfully_equal(left: Dict[Any,Any], right: Dict[Any,Any]) -> bool:
+    if set(left.keys()) != set(right.keys()):
+        return False
+    for key in left.keys():
+        if (left[key] != right[key]) and not (math.isnan(left[key]) and math.isnan(right[key])):
+            return False
+    return True
+
+
 def test_unicode_range_metric_in_profile() -> None:
     row = {"col1": "abc123"}
     schema = UnicodeSchema()
@@ -119,4 +129,4 @@ def test_unicode_range_metric_in_profile() -> None:
         assert (col1_prof is not None) == (col2_prof is not None)
         if col1_prof:
             assert col1_prof._metrics.keys() == col2_prof._metrics.keys()
-            assert col1_prof.to_summary_dict() == col2_prof.to_summary_dict()
+            assert _NaNfully_equal(col1_prof.to_summary_dict(), col2_prof.to_summary_dict())

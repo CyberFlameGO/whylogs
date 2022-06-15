@@ -1,6 +1,6 @@
+import math
 from typing import Any, Dict
 
-import math
 import numpy as np
 import pytest
 
@@ -102,7 +102,7 @@ class UnicodeSchema(DatasetSchema):
     resolvers = UnicodeResolver()
 
 
-def _NaNfully_equal(left: Dict[Any,Any], right: Dict[Any,Any]) -> bool:
+def _NaNfully_equal(left: Dict[Any, Any], right: Dict[Any, Any]) -> bool:
     if set(left.keys()) != set(right.keys()):
         return False
     for key in left.keys():
